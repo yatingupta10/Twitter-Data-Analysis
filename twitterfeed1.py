@@ -55,7 +55,7 @@ class listener(StreamListener):
 				time.sleep(5)
 				pass
 				 
-				exit()
+			exit()
 		 
 	def on_error(self, status):
 		print statuses
