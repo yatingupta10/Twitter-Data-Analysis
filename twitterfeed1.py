@@ -20,50 +20,42 @@ access_token_secret="pNzPwmwhOGuPDOQsWPnWFjn7UvDpGETQ5Vy383CbNDS8x"
 #db = client.test_database
 
 #collection = db.test_collection 
-start_time = time.time() #grabs the system time
-keyword_list = ['#USelection']
-
+#start_time = time.time() #grabs the system time
+# keyword_list = ['#USelection']
+# tweet_data = []
 class listener(StreamListener):
  
-	def __init__(self, start_time, time_limit=60):
+	# def __init__(self, start_time, time_limit=60):
 	 
-		self.time = start_time
-		self.limit = time_limit
+	# 	self.time = start_time
+	# 	self.limit = time_limit
+	# 	self.tweet_data = []
 		 
 	def on_data(self, data):
 	 
-		while (time.time() - self.time) < self.limit:
+		#while (time.time() - self.time) < self.limit:
 		 
 			try:
-			 
-			 
-				client = MongoClient('localhost', 27017)
-				db = client['twitter_db']
-				collection = db['twitter_collection']
-				tweet = json.loads(data)
-				 
-				collection.insert(tweet)
-				#collection.find()
-				tweets_iterator = collection.find()
-				for tweet in tweets_iterator:
-					print tweet['text']
+			 	saveFile = open('twitdb.csv', 'a')
+				saveFile.write(data)
+				saveFile.write('\n')
+				saveFile.close()
 				return True
 				 
 			 
 			except BaseException, e:
 				print 'failed ondata,', str(e)
 				time.sleep(5)
-				pass
 				 
-			exit()
+		#	exit()
 		 
 	def on_error(self, status):
-		print statuses
+		print status
 
 
 auth = OAuthHandler(ckey, consumer_secret) #OAuth object
 auth.set_access_token(access_token_key, access_token_secret)
 
 
-twitterStream = Stream(auth, listener(start_time, time_limit=20)) #initialize Stream object with a time out limit
-twitterStream.filter(track=keyword_list, languages=['en'])  #call the filter method to run the Stream Object
+twitterStream = Stream(auth, listener()) #initialize Stream object with a time out limit
+twitterStream.filter(track=['#USelection'])  #call the filter method to run the Stream Object

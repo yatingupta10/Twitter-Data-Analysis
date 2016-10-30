@@ -17,6 +17,7 @@ def location_of_the_tweet():
 
 @app.route('/popular/', methods=['GET', 'POST'])
 def popular():
+	os.system('python morepop.py')
 	return render_template('pop.html')
 
 
