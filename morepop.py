@@ -6,8 +6,6 @@ from io import StringIO
 def text_count():
 	hc = 0
 	dt = 0
-	hillarylist = ["#HillaryClinton", "Hillary", "Clinton", "#Hillary", "#Clinton", "HillaryClinton", "hillaryclinton", "hillary clinton", "Hillary Clinton"]
-	donaldlist = ["#DonaldTrump", "#Donlald", "#Trump", "Donald", "Trump", "DonaldTrump", "donaldtrump", "donald trump", "Donald Trump"]
 	for i in range(0,len(tt)):
 		# text_count = tt[i]
 		# print tt[i]
