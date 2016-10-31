@@ -1,48 +1,36 @@
 import json
 import pandas as pd 
-import matplotlib.pyplot as plt
-from io import StringIO
+import pymongo
 
-def text_count():
-	hc = 0
-	dt = 0
-	for i in range(0,len(tt)):
-		# text_count = tt[i]
-		# print tt[i]
-		if "#HillaryClinton" in tt[i] or "Hillary" in tt[i] or "Clinton" in tt[i] or "#Hillary" in tt[i] or "#Clinton" in tt[i] or "HillaryClinton" in tt[i] or "hillaryclinton" in tt[i] or "hillary clinton" in tt[i] or  "Hillary Clinton" in tt[i]:
-			hc = hc + 1
-		elif "#DonaldTrump" in tt[i] or "Donald" in tt[i] or "Trump" in tt[i] or "#Donald" in tt[i] or "#Trump" in tt[i] or "DonaldTrump" in tt[i] or "donaldtrump" in tt[i] or "donald trump" in tt[i] or  "Donald Trump" in tt[i]:
-			dt = dt + 1
+def text_count(tweets):
+	hillary_score = 0
+	donald_score = 0
+	for i in range(0,len(tweets["text"])):
+		if "#HillaryClinton" in tweets["text"][i] or "Hillary" in tweets["text"][i] or "Clinton" in tweets["text"][i] or "#Hillary" in tweets["text"][i] or "#Clinton" in tweets["text"][i] or "HillaryClinton" in tweets["text"][i] or "hillaryclinton" in tweets["text"][i] or "hillary clinton" in tweets["text"][i] or  "Hillary Clinton" in tweets["text"][i]:
+			hillary_score = hillary_score + 1
+		elif "#DonaldoTrump" in tweets["text"][i] or "Donald" in tweets["text"][i] or "Trump" in tweets["text"][i] or "#Donald" in tweets["text"][i] or "#Trump" in tweets["text"][i] or "DonaldTrump" in tweets["text"][i] or "donaldtrump" in tweets["text"][i] or "donald trump" in tweets["text"][i] or  "Donald Trump" in tweets["text"][i]:
+			donald_score = donald_score + 1
 	
-	listcount = [hc, dt]
-	#print listcount
-	return listcount
+	list_count = [hillary_score, donald_score]
+	return list_count
 
+def pop():
+	conn=pymongo.MongoClient()
+	db = conn.test
+	collection = db.test_collection
+	
+	tweets_data = []
 
+	cursor = collection.find()
 
-tweets_data_path = "twitdb.txt"
-tweets_data = []
-
-
-tweets_file = open(tweets_data_path, 'r')
-
-for line in tweets_file:
-	try:
-		tweet = json.loads(line)
-		tweets_data.append(tweet)
-	except:
-		continue
-
-tweets = pd.DataFrame()
-tt = pd.DataFrame()
-tweets["text"] = map(lambda tweet:tweet['text'],tweets_data)
-tweets["lang"] = map(lambda tweet:tweet['lang'],tweets_data)
-tt = tweets["text"]
-
-tweets_by_text = text_count()
-
-labels = 'Hillary Clinton', 'Donald Trump'
-
-plt.pie(tweets_by_text, labels=labels, startangle=90)
-plt.axis('equal')
-plt.show()
+	results = [res for res in cursor]
+	cursor.close()
+	tweets = {"text": []}
+	dataset = pd.DataFrame()
+	for item in results:
+		try:
+			tweets["text"].append(item['text'])
+		except:
+			continue
+	popular_count = text_count(tweets)
+	return popular_count

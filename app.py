@@ -6,8 +6,11 @@ import difflib
 import sys, traceback
 import datetime
 import traceback
+from morepop import *
+
 
 app = Flask(__name__)
+
 
 
 @app.route('/location_of_the_tweet/', methods=['GET', 'POST'])
@@ -17,8 +20,9 @@ def location_of_the_tweet():
 
 @app.route('/popular/', methods=['GET', 'POST'])
 def popular():
-	os.system('python morepop.py')
-	return render_template('pop.html')
+	popularity_of_hillary_clinton = pop()[0]
+	popularity_of_donald_trump = pop()[1]
+	return render_template('pop.html', popularity_of_hillary_clinton = popularity_of_hillary_clinton, popularity_of_donald_trump = popularity_of_donald_trump)
 
 
 @app.route('/top_hashtags/', methods=['GET', 'POST'])

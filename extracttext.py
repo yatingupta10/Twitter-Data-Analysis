@@ -47,6 +47,9 @@ tt = tweets["text"]
 
 tweets_by_text = text_count()
 
+hc1 = tweets_by_text[0]
+td1 = tweets_by_text[1]
+
 #print tweets_by_text
 fig,ax = plt.subplots()
 ax.tick_params(axis = 'x', labelsize = 15)
