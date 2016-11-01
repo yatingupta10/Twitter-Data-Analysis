@@ -1,41 +1,51 @@
 import json
 import pandas as pd 
-import matplotlib.pyplot as plt
+import pymongo
 import re
 
-tweets_data_path = "twitdb.txt"
+
+conn=pymongo.MongoClient()
+db = conn.test
+collection = db.test_collection
+
 tweets_data = []
 
+cursor = collection.find()
 
-tweets_file = open(tweets_data_path, 'r')
-
-for line in tweets_file:
+results = [res for res in cursor]
+cursor.close()
+tweets = {"text": []}
+dataset = pd.DataFrame()
+for item in results:
 	try:
-		tweet = json.loads(line)
-		tweets_data.append(tweet)
+		tweets["text"].append(item['text'])
 	except:
 		continue
-
-tweets = pd.DataFrame()
-tf = pd.DataFrame()
-tweets["text"] = map(lambda tweet:tweet['text'],tweets_data)
-tf = tweets["text"]
+# tweets = pd.DataFrame()
+# tf = pd.DataFrame()
+# for item in results:
+# 		try:
+# 			tweets["text"].append(item['text'])
+# 		except:
+# 			continue
+# # tf = tweets
+# print tweets
+# print tf
 
 tweets_hashtags = {'hashtags':[]}
 
-for i in range(0, len(tf)):
-	x = re.findall(r'[#]\S*', tf[i])
+for i in range(0,len(tweets["text"])):
+	x = re.findall(r'[#]\S*', tweets["text"][i])
 	tweets_hashtags['hashtags'].append(x)
-th = pd.DataFrame()
-#th = tweets_hashtags['hashtags']
-th = tweets_hashtags['hashtags'].value_counts()
+# print tweets_hashtags
+th = pd.DataFrame(tweets_hashtags['hashtags'])
+# th.from_dict(tweets_hashtags)
+# for i in range(0,len(tweets["text"])):
+# 	try:
+# 		th.concat(tweets_hashtags["hashtags"][i])
+# 	except:
+# 		continue
+# th = tweets_hashtags.value_counts()
+th = pd.value_counts(th.values.flatten())
+th = th[:10]
 print th
-
-# fig,ax = plt.subplots()
-# ax.tick_params(axis = 'x', labelsize = 200)
-# ax.tick_params(axis = 'y', labelsize = 10)
-# ax.set_xlabel('places', fontsize = 15)
-# ax.set_xlabel('number of tweets', fontsize = 15)
-# ax.set_title('Location of the tweets', fontsize = 15, fontweight = 'bold')
-# tweets_by_hashtags[:10].plot(ax = ax, kind = 'bar', color = 'red')
-# plt.show()
