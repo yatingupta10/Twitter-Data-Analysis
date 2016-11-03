@@ -5,9 +5,13 @@ import time
 import difflib
 import sys, traceback
 import datetime
+import json
 import traceback
+import pandas as pd
 from morepop import *
-
+from tophashtags import *
+from locatetweet import *
+from originalvsretweeted import *
 
 app = Flask(__name__)
 
@@ -15,24 +19,28 @@ app = Flask(__name__)
 
 @app.route('/location_of_the_tweet/', methods=['GET', 'POST'])
 def location_of_the_tweet():
-	return render_template('lot.html')
+	locatetweet = location_of_tweet()
+	return render_template('lot.html', locatetweet=locatetweet)
 
 
 @app.route('/popular/', methods=['GET', 'POST'])
 def popular():
 	popularity_of_hillary_clinton = pop()[0]
 	popularity_of_donald_trump = pop()[1]
-	return render_template('pop.html', popularity_of_hillary_clinton = popularity_of_hillary_clinton, popularity_of_donald_trump = popularity_of_donald_trump)
+	return render_template('pop.html', popularity_of_hillary_clinton=popularity_of_hillary_clinton, popularity_of_donald_trump=popularity_of_donald_trump)
 
 
 @app.route('/top_hashtags/', methods=['GET', 'POST'])
 def top_hashtags():
-	return render_template('thash.html')
+	top_hashtags = top_ten_hashtags()
+	return render_template('thash.html', top_hashtags=top_hashtags)
 
 
 @app.route('/original_vs_retweeted/', methods=['GET', 'POST'])
 def original_vs_retweeted():
-	return render_template('ovr.html')
+	retweeted_count = original_vs_retweet()[0]
+	original_count = original_vs_retweet()[1]
+	return render_template('ovr.html', retweeted_count=retweeted_count, original_count=original_count)
 
 
 @app.route('/fav_counts/', methods=['GET', 'POST'])

@@ -19,14 +19,11 @@ def pop():
 	db = conn.test
 	collection = db.test_collection
 	
-	tweets_data = []
-
 	cursor = collection.find()
 
 	results = [res for res in cursor]
 	cursor.close()
 	tweets = {"text": []}
-	dataset = pd.DataFrame()
 	for item in results:
 		try:
 			tweets["text"].append(item['text'])

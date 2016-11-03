@@ -1,30 +1,25 @@
 import json
 import pandas as pd 
-import matplotlib.pyplot as plt
-
-tweets_data_path = "twitdb.txt"
-tweets_data = []
+import pymongo
 
 
-tweets_file = open(tweets_data_path, 'r')
+def location_of_tweet():
+	conn=pymongo.MongoClient()
+	db = conn.test
+	collection = db.test_collection
 
-for line in tweets_file:
-	try:
-		tweet = json.loads(line)
-		tweets_data.append(tweet)
-	except:
-		continue
+	cursor = collection.find()
 
-tweets_for_location = pd.DataFrame()
-tweets_for_location["country"] = [tweet['place']['full_name'] for tweet in tweets_data if tweet['place']]
-tweets_by_country = tweets_for_location["country"].value_counts()
-#print tweets_by_country
-
-fig,ax = plt.subplots()
-ax.tick_params(axis = 'x', labelsize = 200)
-ax.tick_params(axis = 'y', labelsize = 10)
-ax.set_xlabel('places', fontsize = 15)
-ax.set_xlabel('number of tweets', fontsize = 15)
-ax.set_title('Location of the tweets', fontsize = 15, fontweight = 'bold')
-tweets_by_country[:].plot(ax = ax, kind = 'bar', color = 'red')
-plt.show()
+	results = [res for res in cursor]
+	cursor.close()
+	tweets = {"places": []}
+	for item in results:
+		try:
+			tweets["places"].append(item['place']['country_code'])
+		except:
+			continue
+	country_count = [["Country","Count"]]
+	location_df = pd.DataFrame(tweets['places'])
+	location_df = pd.value_counts(location_df.values.flatten())
+	country_count += location_df.reset_index().values.tolist()
+	return country_count
