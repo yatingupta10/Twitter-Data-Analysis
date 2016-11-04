@@ -12,6 +12,9 @@ from morepop import *
 from tophashtags import *
 from locatetweet import *
 from originalvsretweeted import *
+from typeoftweet import *
+from favcounts import *
+
 
 app = Flask(__name__)
 
@@ -45,12 +48,16 @@ def original_vs_retweeted():
 
 @app.route('/fav_counts/', methods=['GET', 'POST'])
 def fav_counts():
-	return render_template('fc.html')
+	fav_count = favorite_counts()
+	return render_template('fc.html', fav_count=fav_count)
 
 
 @app.route('/type_of_tweet/', methods=['GET', 'POST'])
 def type_of_tweet():
-	return render_template('tot.html')
+	text_count = types_of_tweet()[0]
+	image_count = types_of_tweet()[1]
+	text_and_image_count = types_of_tweet()[2]
+	return render_template('tot.html', text_count=text_count, image_count=image_count, text_and_image_count=text_and_image_count)
 
 
 @app.route('/', methods=['GET', 'POST'])

@@ -1,13 +1,33 @@
- <html>
-	<head>
-		<title>Output</title>
-		<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
-	</head>
-	<body>
-		<div id="container">
-			<div class="title">
-				<h1>Favourite Counts</h1>
-			</div>
-		</div>
-	</body>
+<html>
+  <head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['bar']});
+      google.charts.setOnLoadCallback(drawStuff);
+
+      function drawStuff() {
+        var data = new google.visualization.arrayToDataTable({{fav_count | tojson}});
+
+        var options = {
+          title: 'Distribution of Favorite Counts on Original tweets',
+          width: 5000,
+          legend: { position: 'none' },
+          chart: { subtitle: 'favorite counts on original tweets' },
+          axes: {
+            x: {
+              0: { side: 'top', label: 'Tweet ID'} // Top x-axis.
+            }
+          },
+          bar: { groupWidth: "90%" }
+        };
+
+        var chart = new google.charts.Bar(document.getElementById('top_x_div'));
+        // Convert the Classic options to Material options.
+        chart.draw(data, google.charts.Bar.convertOptions(options));
+      };
+    </script>
+  </head>
+  <body>
+    <div id="top_x_div" style="width: 5000px; height: 500px;"></div>
+  </body>
 </html>
